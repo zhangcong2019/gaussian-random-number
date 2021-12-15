@@ -2,12 +2,6 @@ import numpy
 import random
 import math
 
-import os, sys
-scriptPath = os.path.realpath(os.path.dirname(sys.argv[0]))
-sys.path.append(scriptPath + "/..")
-
-import grng
-
 
 class BoxMuller():
     def __init__(self, seed=0):
@@ -41,5 +35,12 @@ if "__main__" == __name__:
         listTemp = grng_.generate()
         for g in listTemp:
             list_gauss.append(g)
+
+    import os, sys
+
+    scriptPath = os.path.realpath(os.path.dirname(sys.argv[0]))
+    sys.path.append(scriptPath + "/..")
+
+    import grng
 
     grng.plot(list_gauss)
