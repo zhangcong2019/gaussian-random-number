@@ -1,27 +1,55 @@
-import numpy
+import numpy as np
 import random
 import math
-
 
 class Wallace():
     def __init__(self, seed=0):
         self.seed = seed
         random.seed(self.seed)
 
+        self.R = 2
+        self.L = 1024
+        self.K = 4
+        self.N = self.L * self.K
+
+        m = [-1, 1, 1, 1,
+             1, -1, 1, 1,
+             -1, -1, 1, -1,
+             -1, -1, -1, 1]
+
+        self.A = [np.zeros([self.K, self.K]), np.zeros([self.K, self.K])]
+
+        for i in range(self.K):
+            for j in range(self.K):
+                self.A[0][i][j] = m[i * self.K + j]
+        self.A[0] *= 0.5
+        self.A[1] = -self.A[0]
+
+        self.pool = np.random.randn(self.K * self.L)
+
+        self.shuffle = [i for i in range(self.N)]
+
+        for i in range(self.N - 1):
+            j = random.randint(i, self.N - 1)
+            [self.shuffle[i], self.shuffle[j]] = [self.shuffle[j], self.shuffle[i]]
+
+
     def generate(self) -> list:
+        for i in range(self.N - 1):
+            j = random.randint(i, self.N - 1)
+            [self.shuffle[i], self.shuffle[j]] = [self.shuffle[j], self.shuffle[i]]
+        for i in range(self.R):
+            for j in range(self.L):
+                pos = self.shuffle[(j * self.K) : (j * self.K) + self.K]
+                x = self.pool[pos]
+                x = np.reshape(x,[4,1])
+                x_ = np.matmul(self.A[i], x)
+                for z in range(self.K):
+                    self.pool[pos[z]] = x_[z]
 
-        u1 = random.random()
-        u2 = random.random()
 
-        a = math.sqrt(-2 * math.log(u1))
-        b = 2 * math.pi * u2
-
-        r1 = a * math.sin(b)
-        r2 = a * math.cos(b)
-
-        r = [r1, r2]
-
-        return r
+        # s = math.sqrt(math.fabs(self.pool[self.N -1]))
+        return self.pool[:-1]
 
 
 if "__main__" == __name__:

@@ -1,9 +1,10 @@
 from matplotlib import pyplot as plt
 import numpy as np
 
-# from boxMuller.boxMuller import boxMuller
-
 from boxMuller.boxMuller import *
+from grand.grand import *
+from wallace.wallace import *
+from ziggurat.ziggurat import *
 
 def plot(list_gauss):
     x = np.linspace(-4, 4, 800, endpoint=True)
@@ -23,11 +24,11 @@ def plot(list_gauss):
 if "__main__" == __name__:
     print("this is grng")
 
-    grng_ = BoxMuller(seed=99)
+    grng_ = Wallace(seed=99)
 
     list_gauss = []
 
-    for i in range(10000):
+    for i in range(300):
         listTemp = grng_.generate()
         for g in listTemp:
             list_gauss.append(g)

@@ -1,6 +1,14 @@
-import numpy
 import random
 import math
+import numpy as np
+
+
+def phi(x):
+    return math.exp(-x * x / 2)
+
+
+def phiInv(x):
+    return math.sqrt(-2 * math.log(x))
 
 
 class Ziggurat():
@@ -8,20 +16,45 @@ class Ziggurat():
         self.seed = seed
         random.seed(self.seed)
 
+        self.N = 256
+
+        self.r = 3.6541528853610088
+        self.v = 0.00492867323399
+
+        self.x = np.zeros([self.N])
+
+        self.f = np.zeros([self.N])
+
+        self.x[self.N - 1] = self.r
+        self.f[self.N - 1] = phi(self.x[self.N - 1])
+        print("x %d is %.2f" % (self.N - 1, self.x[self.N - 1]))
+
+        for i in range(self.N - 2, 0, -1):
+            self.x[i] = phiInv(self.v / self.x[i + 1] + self.f[i + 1])
+            self.f[i] = phi(self.x[i])
+            print("x %d is %.2f" % (i, self.x[i]))
+
+        self.x[0] = 0.0
+        self.f[0] = phi(self.x[0])
+        print("x %d is %.2f" % (0, self.x[0]))
+
     def generate(self) -> list:
+        while True:
+            u1 = random.random()
+            u2 = random.random() * 2 - 1
 
-        u1 = random.random()
-        u2 = random.random()
+            i = 1 + math.floor((self.N - 1) * u1)
+            x = self.x[i] * u2
+            if math.fabs(x) < self.x[i - 1]:
+                return [x]
+            else:
+                if i != self.N - 1:
+                    y = (self.f[i - 1] - self.f[i]) * random.random()
+                    if y < (phi(x) - self.f[i]):
+                        return [x]
 
-        a = math.sqrt(-2 * math.log(u1))
-        b = 2 * math.pi * u2
 
-        r1 = a * math.sin(b)
-        r2 = a * math.cos(b)
 
-        r = [r1, r2]
-
-        return r
 
 
 if "__main__" == __name__:
