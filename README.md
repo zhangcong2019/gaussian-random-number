@@ -1,1 +1,1 @@
-# fpga-gaussian-random-number
+# gaussian-random-number
