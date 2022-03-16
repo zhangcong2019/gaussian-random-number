@@ -47,11 +47,16 @@ class Ziggurat():
             x = self.x[i] * u2
             if math.fabs(x) < self.x[i - 1]:
                 return [x]
-            else:
-                if i != self.N - 1:
-                    y = (self.f[i - 1] - self.f[i]) * random.random()
-                    if y < (phi(x) - self.f[i]):
-                        return [x]
+            # else:
+            #     # if i != self.N - 1:
+            #     #     y = (self.f[i - 1] - self.f[i]) * random.random()
+            #     #     if y < (phi(x) - self.f[i]):
+            #     #         return [x]
+
+            #     if i != self.N - 1:
+            #         y = random.random()
+            #         if y > ((x) - self.x[i-1]):
+            #             return [x]
 
 
 

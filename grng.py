@@ -24,11 +24,11 @@ def plot(list_gauss):
 if "__main__" == __name__:
     print("this is grng")
 
-    grng_ = Wallace(seed=99)
+    grng_ = Ziggurat(seed=99)
 
     list_gauss = []
 
-    for i in range(300):
+    for i in range(30000):
         listTemp = grng_.generate()
         for g in listTemp:
             list_gauss.append(g)
