@@ -38,6 +38,12 @@ class Ziggurat():
         self.f[0] = phi(self.x[0])
         print("x %d is %.2f" % (0, self.x[0]))
 
+        from numpy import array
+        a = array(self.x,'float32')
+        output_file = open('x.bin', 'wb')
+        a.tofile(output_file)
+        output_file.close()
+
     def generate(self) -> list:
         while True:
             u1 = random.random()
