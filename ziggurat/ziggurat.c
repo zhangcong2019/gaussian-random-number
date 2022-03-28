@@ -10,7 +10,7 @@
 struct ziggurat_generator
 {
     float* x;
-    unsigned short lfsr_0;
+    unsigned char lfsr_0;
     unsigned short lfsr_1;
 };
 
@@ -23,8 +23,8 @@ void lfsr_init(struct ziggurat_generator* ptr_zig)
     // ptr_zig->lfsr_0 = 0xACE1u;
     // ptr_zig->lfsr_1 = 0xACE1u + 0xACE1u;
     
-    ptr_zig->lfsr_0 = 0xACE1u;
-    ptr_zig->lfsr_1 = 0xf8b0u;
+    ptr_zig->lfsr_0 = 0xb8u;
+    ptr_zig->lfsr_1 = 0xd008u;
     // ptr_zig->lfsr_0 = 0xe7e5u;
     // ptr_zig->lfsr_1 = 0xf8b0u;
 }
@@ -36,8 +36,8 @@ void lfsr_deinit(struct ziggurat_generator* ptr_zig)
 
 unsigned short lfsr_generate_0(struct ziggurat_generator* ptr_zig)
 {
-    unsigned short bit = ((ptr_zig->lfsr_0 >> 0) ^ (ptr_zig->lfsr_0 >> 2) ^ (ptr_zig->lfsr_0 >> 3) ^ (ptr_zig->lfsr_0 >> 5)) & 1u;
-    ptr_zig->lfsr_0 = (ptr_zig->lfsr_0 >> 1) | (bit << 15);
+    unsigned char bit = ((ptr_zig->lfsr_0 >> 0) ^ (ptr_zig->lfsr_0 >> 2) ^ (ptr_zig->lfsr_0 >> 3) ^ (ptr_zig->lfsr_0 >> 4)) & 1u;
+    ptr_zig->lfsr_0 = (ptr_zig->lfsr_0 >> 1) | (bit << 7);
     return ptr_zig->lfsr_0;
 }
 unsigned short lfsr_generate_1(struct ziggurat_generator* ptr_zig)
@@ -49,7 +49,7 @@ unsigned short lfsr_generate_1(struct ziggurat_generator* ptr_zig)
 void lfsr_shuffle(struct ziggurat_generator* ptr_zig)
 {
     unsigned short temp = ptr_zig->lfsr_1;
-    ptr_zig->lfsr_1 = ptr_zig->lfsr_0 + 0xACE1u;
+    ptr_zig->lfsr_1 = (ptr_zig->lfsr_0 << 8) + 0xACE1u;
     ptr_zig->lfsr_0 = temp - 0xACE1u;
     return;
 }
@@ -92,7 +92,7 @@ float ziggurat_generate(struct ziggurat_generator* ptr_zig)
             cnt = 0;
         }
 
-        float u1 = lfsr_generate_0(ptr_zig)/65535.0f;
+        int u1 = lfsr_generate_0(ptr_zig);
         float u2 = lfsr_generate_1(ptr_zig)/65535.0f * 2 - 1;
 
         // float u1 = random() / (float)(RAND_MAX);
@@ -106,7 +106,7 @@ float ziggurat_generate(struct ziggurat_generator* ptr_zig)
 
         // printf("%f\n", u1);
 
-        int i = 1 + (int)((N - 1) * u1);
+        int i = u1;
         float x = ptr_zig->x[i] * u2;
         
         if (fabs(x) < ptr_zig->x[i - 1])
@@ -144,7 +144,7 @@ int main()
 
     printf("lfsr1 is %x, lfsr2 is %x\n", ptr_zig->lfsr_0, ptr_zig->lfsr_1);
 
-    for (int i = 0; i < 30000000; i++)
+    for (int i = 0; i < 3000000; i++)
     {
         float grng = ziggurat_generate(ptr_zig);
         fwrite(&grng, sizeof(float), 1, fp);

@@ -28,7 +28,7 @@ if "__main__" == __name__:
 
     in_file = open('random.bin', 'rb')
 
-    num = 30000000
+    num = 3000000
 
     # list_gauss = np.fromfile(in_file, dtype = float)
     import struct
