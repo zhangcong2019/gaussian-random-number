@@ -93,6 +93,11 @@ float ziggurat_generate(struct ziggurat_generator* ptr_zig)
         }
 
         int u1 = lfsr_generate_0(ptr_zig);
+        int i = u1;
+        if (0 == i) {
+            continue;
+        }
+
         float u2 = lfsr_generate_1(ptr_zig)/65535.0f * 2 - 1;
 
         // float u1 = random() / (float)(RAND_MAX);
@@ -106,7 +111,6 @@ float ziggurat_generate(struct ziggurat_generator* ptr_zig)
 
         // printf("%f\n", u1);
 
-        int i = u1;
         float x = ptr_zig->x[i] * u2;
         
         if (fabs(x) < ptr_zig->x[i - 1])
